@@ -52,8 +52,6 @@ public class MySQLAccess {
 
 	private PreparedStatement preparedStatement = null;
 	private ResultSet rs = null;
-	
-	// TODO add a method to create the database if it does not exist yet
 
 	public void connectDataBase() {
 		try {

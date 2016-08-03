@@ -60,6 +60,7 @@ import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import fr.iphc.grid.Config;
 import fr.iphc.grid.Global;
 import fr.iphc.grid.MySQLAccess;
 import fr.iphc.grid.RangeCe;
@@ -70,11 +71,10 @@ public class jobManagerLdap {
 		DirContext dirContext = null;
 		try {
 			Hashtable<String, String> env = new Hashtable<String, String>();
-			// TODO put these in a setting file
 			env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-			env.put(Context.PROVIDER_URL, "ldap://134.158.151.250");
-			String AdminDn = "cn=Manager,dc=iphc,dc=fr";
-			String password = "iphc";
+			env.put(Context.PROVIDER_URL, Config.ldapUrl());
+			String AdminDn = Config.ldapDN();
+			String password = Config.ldapPassword();
 			env.put(Context.SECURITY_PRINCIPAL, AdminDn);
 			env.put(Context.SECURITY_CREDENTIALS, password);
 			dirContext = new InitialDirContext(env);
@@ -115,7 +115,7 @@ public class jobManagerLdap {
 					modItems[1] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("date", date));
 					modItems[2] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 							new BasicAttribute("avg", Float.toString((float) ce.getNb_ok() / (float) ce.getNb_req())));
-					String entryDN = "uri=" + line + ",ou=egi,dc=iphc,dc=fr";
+					String entryDN = "uri=" + line + "," + Config.ldapOU();
 					Name composite = new CompositeName().add(entryDN);
 					dirContent.modifyAttributes(composite, modItems);
 					index++;
@@ -128,7 +128,7 @@ public class jobManagerLdap {
 					Attribute impl = new BasicAttribute("impl", "cream");
 					Attribute avg = new BasicAttribute("avg",
 							Float.toString((float) ce.getNb_ok() / (float) ce.getNb_req()));
-					String entryDN = "uri=" + line + ",ou=egi,dc=iphc,dc=fr";
+					String entryDN = "uri=" + line + "," + Config.ldapOU();
 					Name composite = new CompositeName().add(entryDN);
 					Attribute oc = new BasicAttribute("objectClass");
 					oc.add("ceRanking");
@@ -154,7 +154,7 @@ public class jobManagerLdap {
 			SearchResult result = (SearchResult) answer.next();
 //			Attributes attrs = result.getAttributes();
 //			Attribute uri = attrs.get("uri");
-			String dn = result.getName().replace("\"", "") + ",ou=egi,dc=iphc,dc=fr";
+			String dn = result.getName().replace("\"", "") + "," + Config.ldapOU();
 			Name entryDn = new CompositeName().add(dn);
 			dirContent.destroySubcontext(entryDn);
 		}
@@ -172,7 +172,7 @@ public class jobManagerLdap {
 			SearchControls contraints = new SearchControls();
 			contraints.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			contraints.setReturningAttributes(attributIDs);
-			String BASE_SEARCH = "ou=egi,dc=iphc,dc=fr";
+			String BASE_SEARCH = Config.ldapOU();
 			String filter = "(&(objectClass=ceRanking)(" + addFilter + "))";
 			NamingEnumeration<SearchResult> answer = ctx.search(BASE_SEARCH, filter, contraints);
 			ctx.close();

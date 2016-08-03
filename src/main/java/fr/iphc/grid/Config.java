@@ -106,4 +106,20 @@ public class Config {
 	public static String mySqlPassword() {
 		return get("password");
 	}
+	
+	public static String ldapUrl() {
+		return "ldap://"+_get("ldap-host");
+	}
+	
+	public static String ldapDN() {
+		return get("ldap-dn");
+	}
+	
+	public static String ldapOU() {
+		return get("ldap-ou");
+	}
+	
+	public static String ldapPassword() {
+		return get("ldap-password");
+	}
 }

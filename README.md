@@ -11,7 +11,17 @@ Vigrid has been developped for MSDA (https://msda.unistra.fr), an online platefo
 Searching for proteins in fasta files or using a *de novo* approach requires time and powerful computing resources. Using grid computing reduces the amount of time required by deporting the computation on the available grid nodes.<br />
 Vigrid makes sure that every job sent will be treated. If a grid node (or Computing Element, CE) is not able to compute the requested task (missing dependencies, not enough space, bad environment...), Vigrid will send it on another node.
 
+**Prerequisites**
+
+* You need an access to a computing grid, an being a member of a Virtual Organization.
+* You need to run Vigrid on a computer that is able to connect to the grid.
+* You need to create a MySQL database with the file src/main/resources/vigrid.sql
+* You need to add the information to connect to the database in the file src/main/resources/application.conf
+
 **Job monitor**
+
+Run JobMonitor as a service to populate the database.
+
 ```
 usage: jsaga-job-run [-Arguments <arg>] [-b | -i] [-CandidateHosts <arg>]
        [-Cleanup <arg>] [-CPUArchitecture <arg>] [-d] [-Environment <arg>]
@@ -67,6 +77,7 @@ where:
 
 
 **Job manager**
+
 ```
 usage: jsaga-jobmanager [-Arguments <arg>] [-b <arg>] [-c <arg>]
        [-CandidateHosts <arg>] [-Cleanup <arg>] [-CPUArchitecture <arg>] [-d] [-e
